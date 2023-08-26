@@ -12,6 +12,23 @@ defaults:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: mysql://root:root@localhost:3306/demo
+    services:
+      db:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: demo
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - uses: actions/checkout@v3
 
@@ -30,6 +47,11 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
           key: cargo-build-cache
+
+      - name: run migration
+        run: |
+          cargo install sqlx-cli --no-default-features --features mysql
+          sqlx migarate run --database ${{ env.DATABASE_URL }}
 
       - name: Release lambda
         run: |
