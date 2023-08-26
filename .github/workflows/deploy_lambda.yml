@@ -51,7 +51,7 @@ jobs:
       - name: run migration
         run: |
           cargo install sqlx-cli --no-default-features --features mysql
-          sqlx migrate run --database-url ${{ env.DATABASE_URL }}
+          cd ../ && sqlx migrate run --database-url ${{ env.DATABASE_URL }}
 
       - name: Release lambda
         run: |
