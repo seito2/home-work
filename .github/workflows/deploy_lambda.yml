@@ -34,7 +34,7 @@ jobs:
       - name: Release lambda
         run: |
           pip install cargo-lambda
-          cargo lambda build --release
+          cargo lambda build --release --arm64
           cargo lambda deploy sample-rust-lambda
         env:
           AWS_DEFAULT_REGION: ap-southeast-2
