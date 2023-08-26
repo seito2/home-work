@@ -13,17 +13,17 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: mysql://root:root@localhost:3306/demo
+      DATABASE_URL: mysql://demo:demo@localhost:3306/demo
     services:
       db:
         image: mysql:8.0
         ports:
           - 3306:3306
         env:
-          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_ROOT_PASSWORD: demo
           MYSQL_DATABASE: demo
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root
+          MYSQL_USER: demo
+          MYSQL_PASSWORD: demo
         options: >-
           --health-cmd "mysqladmin ping"
           --health-interval 10s
