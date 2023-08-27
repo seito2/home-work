@@ -1,5 +1,5 @@
 [package]
-name = "sample-rust-lambda"
+name = "seito-homework-api"
 version = "0.1.0"
 edition = "2021"
 
