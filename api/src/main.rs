@@ -23,7 +23,7 @@ async fn main() -> Result<(), Error> {
         let route = e
             .uri()
             .path_and_query()
-            .map(|e| e.as_str().replace("?path=", ""));
+            .map(|e| e.as_str().replace("/?path=", ""));
 
         if route.is_none() {
             return util::in_out_logger(e, pool, health_check_controller::not_found).await;
