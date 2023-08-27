@@ -23,7 +23,7 @@ async fn main() -> Result<(), Error> {
         let route = e.uri().path_and_query().map(|e| {
             e.as_str()
                 .replace("/seito-homework-api", "")
-                .replace("/?path=", "")
+                .replace("?path=", "")
         });
 
         if route.is_none() {
