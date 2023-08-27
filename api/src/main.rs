@@ -20,11 +20,21 @@ async fn main() -> Result<(), Error> {
         let url = env::var("DATABASE_URL").expect("DATABASE_URL not found");
         let pool = MySqlPool::connect(url.as_str()).await?;
 
-        let route = e.uri().path();
+        let route = e
+            .uri()
+            .path_and_query()
+            .map(|e| e.as_str().replace("/?path=", ""));
+
+        if route.is_none() {
+            return util::in_out_logger(e, pool, health_check_controller::not_found).await;
+        }
+
+        let route = route.unwrap();
 
         println!("route: {}", route);
+        println!("query: {:?}", e.uri().path_and_query());
 
-        match route {
+        match route.as_str() {
             "/homeworks" => {
                 return util::in_out_logger(e, pool, homework_controller::show_homeworks).await
             }

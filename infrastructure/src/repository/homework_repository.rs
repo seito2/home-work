@@ -23,7 +23,7 @@ pub struct HomeWork {
 
 impl From<QuerableHomeWork> for HomeWork {
     fn from(qhw: QuerableHomeWork) -> Self {
-        HomeWork {
+        Self {
             id: qhw.id,
             display_name: qhw.display_name,
             description: qhw.description,
