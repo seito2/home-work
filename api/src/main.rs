@@ -28,6 +28,12 @@ async fn main() -> Result<(), Error> {
             "/homeworks" => {
                 return util::in_out_logger(e, pool, homework_controller::show_homeworks).await
             }
+            "/homeworks/create" => {
+                return util::in_out_logger(e, pool, homework_controller::create_homework).await
+            }
+            "/homeworks/update" => {
+                return util::in_out_logger(e, pool, homework_controller::update_homework).await
+            }
             _ => return util::in_out_logger(e, pool, health_check_controller::not_found).await,
         }
     }))

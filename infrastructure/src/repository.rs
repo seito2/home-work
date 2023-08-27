@@ -1,3 +1,1 @@
-mod homework_repository;
-
-pub use homework_repository::*;
+pub mod homework_repository;

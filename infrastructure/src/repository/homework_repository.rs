@@ -1,4 +1,4 @@
-use std::future::Future;
+use std::{future::Future, thread::sleep, time};
 
 use lambda_http::Error;
 use serde::{Deserialize, Serialize};
@@ -46,4 +46,85 @@ pub fn find_homeworks(pool: MySqlPool) -> impl Future<Output = Result<Vec<HomeWo
 
         Ok(homeworks.into_iter().map(|hw| hw.into()).collect())
     }
+}
+
+pub async fn create_homework(
+    pool: MySqlPool,
+    display_name: String,
+    description: String,
+) -> Result<HomeWork, Error> {
+    sqlx::query!(
+        r#"
+            INSERT INTO homeworks (display_name, description)
+            VALUES (?, ?)
+        "#,
+        display_name,
+        description
+    )
+    .execute(&pool)
+    .await?;
+
+    // すぐにSELECTすると、INSERTしたデータが取得できないので、少し待つ
+    sleep(time::Duration::from_millis(10));
+
+    let created: QuerableHomeWork = sqlx::query_as!(
+        QuerableHomeWork,
+        r#"
+            SELECT 
+                *
+            FROM 
+                homeworks
+            WHERE
+                id = (SELECT LAST_INSERT_ID())
+        "#
+    )
+    .fetch_one(&pool)
+    .await?;
+
+    println!("created: {:?}", created.id);
+
+    Ok(created.into())
+}
+
+pub async fn update_homework(
+    pool: MySqlPool,
+    id: i32,
+    display_name: String,
+    description: String,
+) -> Result<HomeWork, Error> {
+    sqlx::query!(
+        r#"
+            UPDATE homeworks
+            SET
+                display_name = ?,
+                description = ?
+            WHERE
+                id = ?
+        "#,
+        display_name,
+        description,
+        id
+    )
+    .execute(&pool)
+    .await?;
+
+    // すぐにSELECTすると、INSERTしたデータが取得できないので、少し待つ
+    sleep(time::Duration::from_millis(10));
+
+    let updated: QuerableHomeWork = sqlx::query_as!(
+        QuerableHomeWork,
+        r#"
+            SELECT 
+                *
+            FROM 
+                homeworks
+            WHERE
+                id = ?
+        "#,
+        id
+    )
+    .fetch_one(&pool)
+    .await?;
+
+    Ok(updated.into())
 }
