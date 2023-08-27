@@ -57,7 +57,7 @@ jobs:
         run: |
           pip install cargo-lambda
           cargo lambda build --release --target x86_64-unknown-linux-musl
-          cargo lambda deploy sample-rust-lambda
+          cargo lambda deploy seito-homework-api
         env:
           AWS_DEFAULT_REGION: ap-southeast-2
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
